@@ -1,0 +1,12 @@
+{
+  "name": "deadlock-streamer",
+  "version": "1.0.0",
+  "description": "Streamer tools for Deadlock Randomizer",
+  "main": "main.js",
+  "scripts": {
+    "start": "unset ELECTRON_RUN_AS_NODE && electron ."
+  },
+  "dependencies": {
+    "electron": "^26.0.0"
+  }
+}

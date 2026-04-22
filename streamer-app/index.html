@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Streamer Tools</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0f0e1a;
+  --sidebar: #111020;
+  --card: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.07);
+  --accent: #c8922a;
+  --text: #e0e0e0;
+  --dim: rgba(255,255,255,0.4);
+  --green: #4caf50;
+  --red: #f44336;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 13px;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── Titlebar ── */
+.titlebar {
+  height: 36px;
+  background: #0b0a15;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px 0 16px;
+  -webkit-app-region: drag;
+  border-bottom: 1px solid rgba(200,146,42,0.15);
+  flex-shrink: 0;
+}
+
+.titlebar-title {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.titlebar-btns {
+  display: flex;
+  gap: 4px;
+  -webkit-app-region: no-drag;
+}
+
+.titlebar-btns button {
+  width: 30px;
+  height: 26px;
+  border: none;
+  background: transparent;
+  color: var(--dim);
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.titlebar-btns button:hover          { background: rgba(255,255,255,0.08); color: var(--text); }
+.titlebar-btns button.close:hover    { background: rgba(244,67,54,0.2);   color: var(--red);  }
+
+/* ── Layout ── */
+.app {
+  display: flex;
+  height: calc(100vh - 36px);
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 180px;
+  flex-shrink: 0;
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-item {
+  padding: 9px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--dim);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-item:hover  { background: rgba(255,255,255,0.05); color: var(--text); }
+.nav-item.active { background: rgba(200,146,42,0.12);  color: var(--accent); }
+
+.nav-item svg { flex-shrink: 0; opacity: 0.8; }
+
+/* ── Content ── */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 28px 20px;
+}
+
+.section { display: none; }
+.section.active { display: block; }
+
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.section-sub {
+  font-size: 12px;
+  color: var(--dim);
+  margin-bottom: 22px;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+
+.card-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 14px;
+}
+
+/* ── Status ── */
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #3a3a4a;
+  flex-shrink: 0;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.dot.on  { background: var(--green); box-shadow: 0 0 8px #4caf5077; }
+
+.status-text { font-size: 13px; }
+
+/* ── Buttons ── */
+.btn-row { display: flex; gap: 8px; }
+
+.btn {
+  padding: 8px 18px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s;
+}
+
+.btn-green {
+  background: rgba(76,175,80,0.1);
+  border-color: rgba(76,175,80,0.35);
+  color: var(--green);
+}
+.btn-green:hover { background: rgba(76,175,80,0.2); }
+
+.btn-red {
+  background: rgba(244,67,54,0.08);
+  border-color: rgba(244,67,54,0.3);
+  color: var(--red);
+}
+.btn-red:hover { background: rgba(244,67,54,0.18); }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+  <span class="titlebar-title">Streamer Tools</span>
+  <div class="titlebar-btns">
+    <button onclick="api.winMinimize()">—</button>
+    <button class="close" onclick="api.winClose()">✕</button>
+  </div>
+</div>
+
+<div class="app">
+
+  <nav class="sidebar">
+    <div class="nav-item active" data-section="overlay">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect x="1.5" y="2.5" width="13" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M5 13.5h6M8 11.5v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      OBS Overlay
+    </div>
+  </nav>
+
+  <main class="content">
+
+    <section class="section active" id="section-overlay">
+      <div class="section-title">OBS Overlay</div>
+      <div class="section-sub">Локальный сервер для передачи данных в OBS</div>
+
+      <div class="card">
+        <div class="card-label">Relay Server · port 3030</div>
+        <div class="status-row">
+          <div class="dot" id="dot"></div>
+          <span class="status-text" id="statusText">Проверка...</span>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-green" id="startBtn">▶ Запустить</button>
+          <button class="btn btn-red"   id="stopBtn"  style="display:none">■ Остановить</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// Navigation
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    item.classList.add('active');
+    document.getElementById('section-' + item.dataset.section).classList.add('active');
+  });
+});
+
+// Server controls
+function setRunning(running) {
+  document.getElementById('dot').className        = 'dot' + (running ? ' on' : '');
+  document.getElementById('statusText').textContent = running ? 'Работает · localhost:3030' : 'Остановлен';
+  document.getElementById('startBtn').style.display = running ? 'none' : '';
+  document.getElementById('stopBtn').style.display  = running ? ''     : 'none';
+}
+
+document.getElementById('startBtn').addEventListener('click', async () => {
+  setRunning((await api.serverStart()).running);
+});
+
+document.getElementById('stopBtn').addEventListener('click', async () => {
+  setRunning((await api.serverStop()).running);
+});
+
+api.onServerUpdate(running => setRunning(running));
+api.serverStatus().then(r => setRunning(r.running));
+</script>
+
+</body>
+</html>

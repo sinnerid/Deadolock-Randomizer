@@ -20,7 +20,23 @@
       "Bash(python3 -c 'import json,sys; data=json.load\\(sys.stdin\\); print\\(type\\(data\\)\\); *)",
       "Bash(curl -s \"https://assets.deadlock-api.com/docs\")",
       "Bash(curl -s \"https://assets.deadlock-api.com/openapi.json\")",
-      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\([p for p in d['paths'].keys\\(\\) if 'abilit' in p.lower\\(\\) or 'hero' in p.lower\\(\\)]\\)\")"
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\([p for p in d['paths'].keys\\(\\) if 'abilit' in p.lower\\(\\) or 'hero' in p.lower\\(\\)]\\)\")",
+      "Bash(npm install *)",
+      "Bash(npm start *)",
+      "Bash(node_modules/electron/dist/electron.exe --version)",
+      "Bash(node node_modules/electron/cli.js .)",
+      "Bash(electron --version)",
+      "WebFetch(domain:deadlockpatchnotes.com)",
+      "WebFetch(domain:deadlock.wiki.gg)",
+      "WebFetch(domain:cdn.cloudflare.steamstatic.com)",
+      "Bash(curl -L -o e:/DeadlockRandomizer/Deadlock-Randomizer/items/healbane_sm.webp https://assets-bucket.deadlock-api.com/assets-api-res/images/upgrades/mods_tech/healbane.webp)",
+      "Bash(curl -L -o e:/DeadlockRandomizer/Deadlock-Randomizer/items/toxic_bullets_sm.webp https://assets-bucket.deadlock-api.com/assets-api-res/images/upgrades/mods_weapon/toxic_bullets.webp)",
+      "Bash(curl -L -o e:/DeadlockRandomizer/Deadlock-Randomizer/items/boundless_spirit_sm.webp https://assets-bucket.deadlock-api.com/assets-api-res/images/upgrades/mods_tech/boundless_spirit.webp)",
+      "Bash(sort -k5 -n)",
+      "Bash(curl -s \"https://assets.deadlock-api.com/v1/icons\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); matches=[k for k in d if 'soul' in k.lower\\(\\)]; print\\(matches\\)\")",
+      "Bash(curl -s \"https://assets.deadlock-api.com/v2/items?language=english\")",
+      "Bash(python3 -c ' *)"
     ]
   }
 }

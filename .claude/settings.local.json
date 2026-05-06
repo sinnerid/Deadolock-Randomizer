@@ -36,7 +36,8 @@
       "Bash(curl -s \"https://assets.deadlock-api.com/v1/icons\")",
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); matches=[k for k in d if 'soul' in k.lower\\(\\)]; print\\(matches\\)\")",
       "Bash(curl -s \"https://assets.deadlock-api.com/v2/items?language=english\")",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s -A \"Mozilla/5.0\" \"https://assets.deadlock-api.com/v2/items/by-hero-id/1?language=english\")"
     ]
   }
 }

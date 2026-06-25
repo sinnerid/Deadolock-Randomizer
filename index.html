@@ -685,7 +685,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // API CDN image overrides (populated by initFromAPI)
   const API_ITEM_IMAGE = new Map(); // display name → CDN image URL
-  let SOULS_ICON_URL = '';
   const TIER_COST = { 1: 800, 2: 1600, 3: 3200, 4: 6400 }; // fallback, overwritten by API
   const getItemCost = (name) => TIER_COST[ITEM_TIER.get(name)] ?? 0;
 
@@ -1290,11 +1289,10 @@ window.addEventListener('DOMContentLoaded', () => {
       const controller = new AbortController();
       const tid = setTimeout(() => controller.abort(), 8000);
 
-      const [heroesRes, itemsRes, genericRes, iconsRes] = await Promise.all([
-        fetch('https://assets.deadlock-api.com/v2/heroes?language=english&only_active=true', { signal: controller.signal }),
-        fetch('https://assets.deadlock-api.com/v2/items?language=english', { signal: controller.signal }),
-        fetch('https://assets.deadlock-api.com/v2/generic-data', { signal: controller.signal }),
-        fetch('https://assets.deadlock-api.com/v1/icons', { signal: controller.signal })
+      const [heroesRes, itemsRes, genericRes] = await Promise.all([
+        fetch('https://api.deadlock-api.com/v1/assets/heroes?language=english&only_active=true', { signal: controller.signal }),
+        fetch('https://api.deadlock-api.com/v1/assets/items?language=english', { signal: controller.signal }),
+        fetch('https://api.deadlock-api.com/v1/assets/generic-data', { signal: controller.signal }),
       ]);
       clearTimeout(tid);
 
@@ -1327,7 +1325,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const items = await itemsRes.json();
         for (const item of items) {
           if (item.type !== 'upgrade') continue;
-          if (item.disabled || !item.shopable) continue;
+          if (!item.shopable) continue;
           const slotType = item.item_slot_type;
           if (!['weapon', 'spirit', 'vitality'].includes(slotType)) continue;
           const name = item.name;
@@ -1335,6 +1333,7 @@ window.addEventListener('DOMContentLoaded', () => {
           const tier = item.item_tier;
           const imgUrl = item.shop_image_webp || item.image_webp || item.image;
           if (imgUrl) API_ITEM_IMAGE.set(name, imgUrl);
+          if (item.is_active_item) ACTIVE_ITEMS.add(name);
           if (tier >= 1 && tier <= 4 && !ALL_ITEMS.includes(name)) {
             TIERS[tier].push(name);
             ALL_ITEMS.push(name);
@@ -1352,11 +1351,6 @@ window.addEventListener('DOMContentLoaded', () => {
             if (prices[tier] != null) TIER_COST[tier] = prices[tier];
           }
         }
-      }
-
-      if (iconsRes.ok) {
-        const icons = await iconsRes.json();
-        if (icons.icon_soul) SOULS_ICON_URL = icons.icon_soul;
       }
 
       statusEl.remove();
@@ -1417,11 +1411,10 @@ window.addEventListener('DOMContentLoaded', () => {
       return;
     }
     try {
-      const res = await fetch(`https://assets.deadlock-api.com/v2/items/by-hero-id/${heroId}?language=english`);
+      const res = await fetch(`https://api.deadlock-api.com/v1/assets/items/by-hero-id/${heroId}?language=english`);
       if (!res.ok) return;
       const abilities = await res.json();
-      // separate non-ult (signature) and ult
-      const sigs = abilities.filter(a => a.type === 'ability' && a.ability_type !== 'ultimate');
+      const sigs = abilities.filter(a => a.type === 'ability' && a.ability_type === 'signature');
       const ults = abilities.filter(a => a.type === 'ability' && a.ability_type === 'ultimate');
       const ordered = [...sigs.slice(0, 3), ...ults.slice(0, 1)];
       ordered.forEach((ab, i) => {
